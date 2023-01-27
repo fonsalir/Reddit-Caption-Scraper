@@ -4,6 +4,9 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 import time
 import sys
+import csv
+from colorama import Fore
+
 
 #how many reddit titles will be scrapped
 requested_amount = input("how many?: ")
@@ -12,7 +15,6 @@ try:
 except ValueError:
     sys.exit("Invalid")
 
-print(int_requested_amount)
 
 #gets the path of my chrome driver
 service = Service(executable_path="C:\Program Files (x86)\chromedriver")
@@ -25,25 +27,35 @@ html = driver.find_element(By.TAG_NAME,'html')
 h3tags = driver.find_elements(By.XPATH, "//h3")
 
 
-captions = []
+captions = set()
 loop = True
 while loop:
     html.send_keys(Keys.PAGE_DOWN)
-    time.sleep(0.5)
     html.send_keys(Keys.PAGE_DOWN)
+    time.sleep(1.5)
     h3tags = driver.find_elements(By.XPATH, "//h3")
-    captions = set()
+    
     for tag in h3tags:
-        captions.add(tag.text)
+        if tag.text == "":
+            pass
+        else:
+            captions.add(tag.text)
         if len(captions) >= int_requested_amount:
             loop = False
+    
+    print(f"{Fore.GREEN + str(len(captions))} captions")
 
 captions = list(captions)
-if "" in captions:
-    captions.remove("")
-if len(captions) >=  int_requested_amount:
-    for caption in range(int_requested_amount):
-        print(captions[caption])
+
+
+
+if len(captions) != int_requested_amount:
+    captions_dict = {captions[caption]:"caption" for caption in range(int_requested_amount)}
 else:
-    for caption in captions:
-        print(caption)
+    captions_dict = {caption:"caption" for caption in captions}
+
+with open("captions.csv", "w", newline="") as file:
+    writer = csv.writer(file)
+    for caption in captions_dict:
+        writer.writerow({caption})
+    
