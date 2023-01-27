@@ -34,7 +34,6 @@ while loop:
     html.send_keys(Keys.PAGE_DOWN)
     time.sleep(1.5)
     h3tags = driver.find_elements(By.XPATH, "//h3")
-    
     for tag in h3tags:
         if tag.text == "":
             pass
