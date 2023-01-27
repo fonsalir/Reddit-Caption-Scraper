@@ -25,14 +25,13 @@ html = driver.find_element(By.TAG_NAME,'html')
 h3tags = driver.find_elements(By.XPATH, "//h3")
 
 
-captions = []
+captions = set()
 loop = True
 while loop:
     html.send_keys(Keys.PAGE_DOWN)
     time.sleep(0.5)
     html.send_keys(Keys.PAGE_DOWN)
     h3tags = driver.find_elements(By.XPATH, "//h3")
-    captions = set()
     for tag in h3tags:
         captions.add(tag.text)
         if len(captions) >= int_requested_amount:
